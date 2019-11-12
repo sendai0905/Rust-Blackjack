@@ -3,18 +3,38 @@ extern crate rand;
 use rand::Rng;
 use std::io;
 
+enum Mark {
+    to_ascii("D"),
+    to_ascii("H"),
+    to_ascii("S"),
+    to_ascii("C")
+}
+
+fn to_ascii(s: &str) -> &str {
+    match s {
+        "D" => "ダイヤ",
+        "H" => "ハート",
+        "S" => "スペード",
+        "C" => "クローバー",
+    }
+}
+
 struct Card {
-    mark: String,
+    mark: Mark,
     number: u8,
 }
 
 impl Card {
-    fn new(mark: &str, number: &str) -> Card {
+    fn new(mark: Mark, number: &str) -> Card {
         Card {
-            mark: mark.to_string(),
+            mark: mark,
             number: to_number(number),
         }
     }
+}
+
+fn generate_deck() {
+
 }
 
 fn to_number(number: &str) -> u8 {
@@ -33,10 +53,7 @@ fn decide_card(mark: &Vec<&str>, number: &Vec<&str>) -> Card {
 }
 
 fn draw_player(card: &Card, score: u8) -> u8 {
-    println!(
-        "あなたの引いたカードは{}の{}です。",
-        card.mark, card.number
-    );
+    println!("あなたの引いたカードは{}の{}です。", card.mark, card.number);
     score + card.number
 }
 
@@ -81,9 +98,7 @@ fn main() {
 
     while player_score < 21 {
         println!("あなたの現在の得点は{}です。", player_score);
-        println!(
-            "カードを引きますか？引く場合はYを、引かない場合はNを入力してください"
-        );
+        println!("カードを引きますか？引く場合はYを、引かない場合はNを入力してください");
         let mut input_str = String::new();
         io::stdin()
             .read_line(&mut input_str)
