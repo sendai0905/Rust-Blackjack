@@ -4,18 +4,15 @@ use rand::Rng;
 use std::io;
 
 enum Mark {
-    to_ascii("D"),
-    to_ascii("H"),
-    to_ascii("S"),
-    to_ascii("C")
+    Diamond,
+    Heart,
+    Spade,
+    Clover
 }
 
-fn to_ascii(s: &str) -> &str {
-    match s {
-        "D" => "ダイヤ",
-        "H" => "ハート",
-        "S" => "スペード",
-        "C" => "クローバー",
+impl Mark {
+    fn show(&self) -> {
+
     }
 }
 
@@ -33,8 +30,20 @@ impl Card {
     }
 }
 
-fn generate_deck() {
-
+fn generate_deck() -> Vec<Card> {
+    let mut deck: Vec<Card> = Vec::new();
+    for i in 1..52 {
+        if i <= 13 {
+            deck.push(Card::new(Mark::Diamond, to_str(&i)));
+        } else if i <= 26 {
+            deck.push(Card::new(Mark::Heart, to_str(&(i - 13))));
+        } else if i <= 39 {
+            deck.push(Card::new(Mark::Spade, to_str(&(i - 26))));
+        } else {
+            deck.push(Card::new(Mark::Clover, to_str(&(i - 39))));
+        }
+    }
+    deck
 }
 
 fn to_number(number: &str) -> u8 {
@@ -45,11 +54,51 @@ fn to_number(number: &str) -> u8 {
     }
 }
 
-fn decide_card(mark: &Vec<&str>, number: &Vec<&str>) -> Card {
+fn to_str(number: &u8) -> &str {
+    match number {
+        1 => "A",
+        11 => "J",
+        12 => "Q",
+        13 => "K",
+        _ => &number.to_string(),
+    }
+}
+
+fn decide_card(deck: &Vec<Card>) -> Card {
     let mut rng = rand::thread_rng();
-    let card_mark = mark[rng.gen_range(0, 4)];
-    let card_score = number[rng.gen_range(0, 13)];
-    Card::new(card_mark, card_score)
+    deck[rng.gen_range(0, 52)]
+}
+
+fn remove_card(deck: &Vec<Card>, card: &Card) -> &Vec<Card> {
+    for i in 0..deck.len() {
+        match deck[i].mark {
+            Mark::Diamond => {
+                if deck[i].number == card.number {
+                    let mut deck = deck.remove(i);
+                    break;
+                }
+            },
+            Mark::Heart => {
+                if deck[i].number == card.number {
+                    let mut deck = deck.remove(i);
+                    break;
+                }
+            },
+            Mark::Spade => {
+                if deck[i].number == card.number {
+                    let mut deck = deck.remove(i);
+                    break;
+                }
+            },
+            Mark::Clover => {
+                if deck[i].number == card.number {
+                    let mut deck = deck.remove(i);
+                    break;
+                }
+            },
+        }
+    }
+    deck
 }
 
 fn draw_player(card: &Card, score: u8) -> u8 {
@@ -78,14 +127,11 @@ fn check_winner(player_score: u8, dealer_score: u8) {
 fn main() {
     println!("ブラックジャックへようこそ！");
     println!("ゲームを開始します");
-    let mark = vec!["ダイヤ", "ハート", "スペード", "クローバー"];
-    let number = vec![
-        "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",
-    ];
     let player_score: u8 = 0;
     let dealer_score: u8 = 0;
+    let deck = generate_deck();
 
-    let player_1 = decide_card(&mark, &number);
+    let player_1 = decide_card(deck);
     let player_score = draw_player(&player_1, player_score);
 
     let player_2 = decide_card(&mark, &number);
